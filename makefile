@@ -1,8 +1,8 @@
 CC = gcc
 cflags := -g -O3 -Wall
 executables = project2
-sources = functions.c $(executables).c
-headers = Util.h project2.h
+sources = firstFit.c  $(executables).c
+headers = firstFit.h Util.h project2.h
 all:$(executables)
 debug: cflags += -DDEBUG 
 debug: all

@@ -1,21 +1,8 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-#include<unistd.h>
-#define _POSIX_C_SOURCE 200809L
-//user interaction functions
-void request(char* name,long size);
-void release(char* name);
-void available();
-void assigned();
-void find(char* name);
-//utility and debugging
-void usage();
-void printTable();
+#include"firstFit.h"
 //global for helper functions
-long len;
-char**allocations;
-int main(int argc, char*argv[]){
+extern long len;
+extern char**allocations;
+int firstFit(int argc, char*argv[]){
 	len = strtol(argv[1],NULL,0);
 
 	//allow array of allocation labels to be used by helpr functions
@@ -47,7 +34,7 @@ int main(int argc, char*argv[]){
 						char* nextNext = strtok(NULL," ");
 						if(nextToken&&nextNext){
 							long l = strtol(nextNext,NULL,0);
-							if(l>0)	request(nextToken,l);
+							if(l>0)	requestFirstFit(nextToken,l);
 						}
 						else{
 							puts("something's really wrong here");
@@ -60,16 +47,16 @@ int main(int argc, char*argv[]){
 					if(!nextToken||strlen(nextToken)<=0||strlen(nextToken)>16) {
 						usage();
 					}else
-						release(nextToken);
+						releaseFirstFit(nextToken);
 				}
 				else if(!strcmp(nextToken,"LIST")){
 					nextToken = strtok(NULL," ");
 					if(nextToken&&strlen(nextToken)>=0&&strlen(nextToken)<16) {
 						if(!strcmp(nextToken,"AVAILABLE")){
-							available();
+							availableFirstFit();
 						}
 						else if(!strcmp(nextToken,"ASSIGNED")){
-							assigned();
+							assignedFirstFit();
 						}
 					}
 					else{
@@ -81,7 +68,7 @@ int main(int argc, char*argv[]){
 					if(!nextToken||strlen(nextToken)<=0||strlen(nextToken)>16) {
 						usage();
 					}else
-						find(nextToken);
+						findFirstFit(nextToken);
 				}
 				else{ 
 					usage();
@@ -96,7 +83,7 @@ int main(int argc, char*argv[]){
 	return(0);
 }
 
-void request(char* name,long size){
+void requestFirstFit(char* name,long size){
 	if(name==NULL || sizeof name == 0 || name[0]=='\0' || strlen(name)>16){
 		printf("FAIL REQUEST %.16s %ld",name,size);
 		return;
@@ -120,7 +107,7 @@ void request(char* name,long size){
 	}
 	printf("FAIL REQUEST %.16s %ld",name,size);
 }
-void release(char* name){
+void releaseFirstFit(char* name){
 	if(name==NULL || name[0]=='\0' || strlen(name)>16){
 		printf("FAIL RELEASE %.16s",name);
 		return;
@@ -137,7 +124,7 @@ void release(char* name){
 	else printf("FAIL RELEASE %.16s",name);
 }
 
-void available(){
+void availableFirstFit(){
 	long index = 0;
 	long size = 0;
 	int full = 1;//becomes 0 if any empty block is found
@@ -163,7 +150,7 @@ void available(){
 	}//otherwise, nothing left to print
 	return;
 }
-void assigned(){
+void assignedFirstFit(){
 	long index = 0;
 	long size = 1;
 	int empty = 1;//becomes 0 if any allocated block is found
@@ -191,8 +178,8 @@ void assigned(){
 	}
 	else if(empty) puts("NONE");
 }
-//finds a process and measures its allocation
-void find(char* name){
+//findFirstFits a process and measures its allocation
+void findFirstFit(char* name){
 	int found =0;
 	long i=-1;
 	//exits when is found
